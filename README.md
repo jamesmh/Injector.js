@@ -1,2 +1,4 @@
 # Injector.js
-Vanilla JS dependancy injection
+Vanilla JS dependency injection.
+
+Docs coming soon... see test/test.js if needed in meantime.

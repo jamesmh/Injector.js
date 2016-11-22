@@ -56,11 +56,11 @@ var prototypeConstructor = function(HttpService, RouterService){
 
 #### Function:
 
-As with ES6 constructors, supply the .inject() method with "this.constructor". Note that lambda, anonymous and self-executing functions will not work.
+Supply the .inject() method with the function you are in. Note that lambda, anonymous and self-executing functions will not work.
 ```
 var regularFunction = function(HttpService, RouterService) {
 	// Without ES6 destructuring
-	var injected = $injector.inject(doStuff);
+	var injected = $injector.inject(regularFunction);
 	HttpService = injected.HttpService;
 	RouterService = injected.RouterService;
 };

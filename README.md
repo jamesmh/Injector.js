@@ -1,6 +1,6 @@
 # Injector.js
 
-I've looked around for a simple library that provides dependency injection for vanilla JavaScript. The libraries I've seen are not "just simple" enough though, in terms of ease of use. I want to be able to call a function (normally a constructor) *without supplying anything* and have the dependancies injected. I haven't found anything like that. So... I made one.  
+I've looked around for a simple library that provides dependency injection for vanilla JavaScript. The libraries I've seen are not simple enough to use though. I want to be able to call a function (normally a constructor) *without supplying anything* and have the dependancies injected. I haven't found anything like that. So... I made one.  
 
 ## Installation
 

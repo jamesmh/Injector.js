@@ -8,7 +8,7 @@ Include /dist/injector.js.
 
 See /src/index.js if you want to import the ES6 module into your project.
 
-### Step 1:Register Dependencies
+### Step 1: Register Dependencies
 
 You need to provide "$injector" with all the dependencies you will need. Use .register(), which can be chained. The first parameter is the "name" or key of the dependency, and the second parameter is the object to be the dependency. *Note: The "name" will be used to match parameter names from functions... keep reading.*
 

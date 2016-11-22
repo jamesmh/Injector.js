@@ -35,8 +35,8 @@ For ES6 constructors, supply the .inject() method with "this.constructor".
 ```
 class InjectMe {
 	constructor(HttpService, RouterService){
-    		// Using ES6 destructuring...
-        	var { HttpService, RouterService } = $injector.inject(this.constructor);
+		// Using ES6 destructuring...
+		var { HttpService, RouterService } = $injector.inject(this.constructor);
 		this.http = HttpService;
 		this.router = RouterService;
 	}
@@ -74,8 +74,8 @@ Just call the function you configured. Consider the following:
 ```
 class InjectMe {
 	constructor(HttpService, RouterService){
-    		// Using ES6 deconstruction...
-        	var { HttpService, RouterService } = $injector.inject(this.constructor);
+		// Using ES6 deconstruction...
+		var { HttpService, RouterService } = $injector.inject(this.constructor);
 		this.http = HttpService;
 		this.router = RouterService;
 	}

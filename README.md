@@ -110,7 +110,7 @@ var someHttpRelatedFunction = function() {
 ```
 class InjectMe {
 	constructor(someCondition){
-    		// Using ES6 destructuring...
+		// Using ES6 destructuring...
 		if (someCondition){
         		var { HttpService, RouterService } = $injector.inject(this.constructor);
 		}

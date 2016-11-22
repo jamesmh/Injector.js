@@ -1,15 +1,16 @@
 # Injector.js
-Vanilla JS dependency injection.
 
-I've looked around for a simple library that provides dependency injection for vanilla JavaScript. The libraries I've seen are not "just simple" enough though, in terms of ease of use / configuration. I want to be able to call a function (normally a constructor) *without supplying anything*... and have the dependancies injected. So....I haven't found anything like that. So I made one.  
+I've looked around for a simple library that provides dependency injection for vanilla JavaScript. The libraries I've seen are not "just simple" enough though, in terms of ease of use. I want to be able to call a function (normally a constructor) *without supplying anything* and have the dependancies injected. I haven't found anything like that. So... I made one.  
 
 ## Installation
 
-Include /dist/injector.js. See /src/index.js if you want to import ES6 module into your project.
+Include /dist/injector.js. 
 
-## Step 1:Register Dependencies
+See /src/index.js if you want to import the ES6 module into your project.
 
-The first thing you need to do is provide the "injector" with all the dependencies you have. Use .register(), which can be chained. The first parameter is the "name" or key of the dependency, and the second is the actual object.
+### Step 1:Register Dependencies
+
+You need to provide "$injector" with all the dependencies you will need. Use .register(), which can be chained. The first parameter is the "name" or key of the dependency, and the second parameter is the object to be the dependency. *Note: The "name" will be used to match parameter names from functions... keep reading.*
 
 ```
 var http  = { get: "I'm a http service." };
@@ -19,34 +20,118 @@ $injector.register("HttpService", http)
 	.register("RouterService", router);
 ```
 
-Right now, the object you inject is used statically (will add option to have new instances injected eventually...).
+Right now, the object you inject is used statically. (I may add the option to have new instances injected - eventually)
 
-## Step 2: Enable Function For Injection
 
-Each function that you want to have injection enabled for must be initialized  on it's own. This is where I didn't like how other libraries complicated this step. For example, here's how you would enable injection for an ES6 class constructor:
+### Step 2: Enable Function For Injection
 
+Each function you want to have DI enabled for will have to "initialize" himself. 
+
+(a) Call the .inject() method from the injector object ("$injector" if using pre-built file) then (b) supply the function you are inside of as the parameter. The returned object has the dependencies as properties.
+
+#### ES6 class constructor:
+
+For ES6 constructors, supply the .inject() method with "this.constructor".
 ```
 class InjectMe {
 	constructor(HttpService, RouterService){
-    // Using ES6 deconstruction...
-		var { HttpService, RouterService } = $injector.inject(this.constructor);
+    		// Using ES6 destructuring...
+        	var { HttpService, RouterService } = $injector.inject(this.constructor);
 		this.http = HttpService;
 		this.router = RouterService;
 	}
 };
 ```
 
-The .inject() method accepts the function that you are inside of and want to enable injection for. The argument names of our function / method have to match one of the "names" or keys you provided to the .register() method. The .inject() method will return an object having all the dependancies. In the example above, ES6 deconstruction is used - which makes this process really easy. You could also do the following:
+#### Non-class / prototype constructor:
+
+As with ES6 constructors, supply the .inject() method with "this.constructor".
+```
+var prototypeConstructor = function(HttpService, RouterService){
+	var { HttpService, RouterService } = $injector.inject(this.constructor);
+	this.http = HttpService;
+	this.router = RouterService;
+};
+```
+
+#### Function:
+
+As with ES6 constructors, supply the .inject() method with "this.constructor". Note that lambda, anonymous and self-executing functions will not work.
+```
+var regularFunction = function(HttpService, RouterService) {
+	// Without ES6 destructuring
+	var injected = $injector.inject(doStuff);
+	HttpService = injected.HttpService;
+	RouterService = injected.RouterService;
+};
+```
+
+
+### Step 3: Call The Function With No Arguments :)
+
+Just call the function you configured. Consider the following:
 
 ```
 class InjectMe {
 	constructor(HttpService, RouterService){
-    // Using ES6 deconstruction...
-		var dependancies = $injector.inject(this.constructor);
-		this.http = dependancies.HttpService;
-		this.router = dependancies.RouterService;
+    		// Using ES6 deconstruction...
+        	var { HttpService, RouterService } = $injector.inject(this.constructor);
+		this.http = HttpService;
+		this.router = RouterService;
+	}
+};
+
+var myInstance = new InjectMe(); // myInstance.http is the injected object that was previous configured....
+```
+
+### To Dos / Enhancements
+
+(a) Create "call" method that will accept a function and perform the injection for you, without needing to "initialize" the DI.
+
+(b) Create extendable class that provdides DI for all child classes?
+
+(c) Explore advanced "tricks" like creating dummy functions that can be re-used to define a group of dependencies to inject.
+
+*Would this work?*
+```
+// Represents a generic "Http" dependency group.
+var httpDependencies = function(HttpService, RouterService){};
+
+// ....Later on....
+var someHttpRelatedFunction = function() {
+	var { HttpService, RouterService } = $injector.inject(httpDependencies);
+	
+	// Do some stuff using the HttpService and RouterService....
+};
+```
+
+*And this? Dynamic injection?*
+
+```
+class InjectMe {
+	constructor(someCondition){
+    		// Using ES6 destructuring...
+		if (someCondition){
+        		var { HttpService, RouterService } = $injector.inject(this.constructor);
+		}
+		else {
+			var { HttpService, RouterService } = $injector.inject(someOtherHttpDependencyGroupFunction);
+		}
+		this.http = HttpService;
+		this.router = RouterService;
 	}
 };
 ```
 
-You can enable ES6 constructors and prototype constructors. SUpply "this.constructor" to the .inject() method for these cases. You can also use regular functions or methods.
+*Or this?*
+```
+var someFunction = function(HttpService) { /* do stuff */ };
+
+// Later on...
+var { HttpService } = $injector.inject(someFunction);
+someFunction(HttpService);
+
+var { HttpService } = $injector.inject(someOtherFunction);
+someFunction(HttpService);
+
+```

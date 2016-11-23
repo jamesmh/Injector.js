@@ -10,7 +10,19 @@ See /src/index.js if you want to import the ES6 module into your project.
 
 ### Step 1: Register Dependencies
 
-You need to provide "$injector" with all the dependencies you will need. Use .register(), which can be chained. The first parameter is the "name" or key of the dependency, and the second parameter is the object to be the dependency. *Note: The "name" will be used to match parameter names from functions... keep reading.*
+You need to provide "$injector" with all the dependencies you will need. Provide to the .register() method an object with (a) keys that correspond to the argument names that they will be injected into and (b) the actual object to be the dependency.
+
+```
+var http  = { get: "I'm a http service." };
+var router = { routes: "I'm a router."};
+
+$injector.register({
+	HttpService: http,
+	RouterService: router
+});
+```
+
+The .register() method will also accept a dependency registration in the following format:
 
 ```
 var http  = { get: "I'm a http service." };
@@ -20,7 +32,7 @@ $injector.register("HttpService", http)
 	.register("RouterService", router);
 ```
 
-Right now, the object you inject is used statically. (I may add the option to have new instances injected - eventually)
+Right now, the object you inject is used statically (will be addings instance option in future...).
 
 
 ### Step 2: Enable Function For Injection

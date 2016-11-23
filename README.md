@@ -85,7 +85,7 @@ var prototypeConstructor = function(HttpService, RouterService){
 
 #### Function:
 
-Supply the .inject() method with the function you are in. Note that lambda, anonymous and self-executing functions will not work.
+Supply the .inject() method with the function you are in. Note that anonymous and self-executing functions will not work.
 
 ```javascript
 var regularFunction = function(HttpService, RouterService) {
@@ -114,7 +114,7 @@ class InjectMe {
 var myInstance = new InjectMe(); // myInstance.http is the injected object that was previous configured....
 ```
 
-### To Dos / Enhancements
+### To Dos / Enhancements / Notes...
 
 (a) Create extendable class that provdides DI for all child classes?
 

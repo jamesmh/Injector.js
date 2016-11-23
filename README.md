@@ -32,7 +32,13 @@ $injector.register("HttpService", http)
 	.register("RouterService", router);
 ```
 
-Right now, the object you inject is used statically (will be addings instance option in future...).
+In both examples, any functions that are enabled for injection will have arguments "HttpService" and "RouterService" injected. Ex:
+
+```
+function(HttpService, RouterService) { /* code here... */ };
+```
+
+*Right now, the object you inject is used statically (will be addings instance option in future...).*
 
 
 ### Step 2: Enable Function For Injection

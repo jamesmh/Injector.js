@@ -6,9 +6,9 @@ I'm using ES6 modules, webpack to compile and jest for testing.
 
 ## Installation
 
-Include /dist/injector.js if you just want to compiled version.
+Include "/dist/injector.js" if you just want the compiled version.
 
-If you want to import the ES6 module into your project then reference /src/injector.js. Here's an example taken from /src/index.js:
+If you want to import the ES6 module into your project then reference "/src/injector.js." Here's an example taken from the internal entry file "/src/index.js":
 
 ```javascript
 import { Injector } from "./injector";

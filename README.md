@@ -1,18 +1,26 @@
 # Injector.js
 
-I've looked around for a simple library that provides dependency injection for vanilla JavaScript. The libraries I've seen are not simple enough to use though. So... I made one.  
+I've looked around for a simple library that provides dependency injection for vanilla JavaScript. The libraries I've seen are not simple enough to use though. So... I made one.
+
+I'm using ES6 modules, webpack to compile and jest for testing.
 
 ## Installation
 
-Include /dist/injector.js. 
+Include /dist/injector.js if you just want to compiled version.
 
-See /src/index.js if you want to import the ES6 module into your project.
+If you want to import the ES6 module into your project then reference /src/injector.js. Here's an example taken from /src/index.js:
+
+```javascript
+import { Injector } from "./injector";
+window["$injector"] = new Injector();
+```
+
 
 ### Step 1: Register Dependencies
 
 You need to provide "$injector" with all the dependencies you will need. Provide to the .register() method an object with (a) keys that correspond to the argument names that they will be injected into and (b) the actual object to be the dependency.
 
-```
+```javascript
 var http  = { get: "I'm a http service." };
 var router = { routes: "I'm a router."};
 
@@ -24,7 +32,7 @@ $injector.register({
 
 The .register() method will also accept a dependency registration in the following format:
 
-```
+```javascript
 var http  = { get: "I'm a http service." };
 var router = { routes: "I'm a router."};
 
@@ -34,7 +42,7 @@ $injector.register("HttpService", http)
 
 In both examples, any functions that are enabled for injection will have arguments "HttpService" and "RouterService" injected. Ex:
 
-```
+```javascript
 function(HttpService, RouterService) { /* code here... */ };
 ```
 
@@ -50,7 +58,8 @@ Each function you want to have DI enabled for will have to "initialize" himself.
 #### ES6 class constructor:
 
 For ES6 constructors, supply the .inject() method with "this.constructor".
-```
+
+```javascript
 class InjectMe {
 	constructor(HttpService, RouterService){
 		// Using ES6 destructuring...
@@ -64,7 +73,8 @@ class InjectMe {
 #### Non-class / prototype constructor:
 
 As with ES6 constructors, supply the .inject() method with "this.constructor".
-```
+
+```javascript
 var prototypeConstructor = function(HttpService, RouterService){
 	var { HttpService, RouterService } = $injector.inject(this.constructor);
 	this.http = HttpService;
@@ -72,10 +82,12 @@ var prototypeConstructor = function(HttpService, RouterService){
 };
 ```
 
+
 #### Function:
 
 Supply the .inject() method with the function you are in. Note that lambda, anonymous and self-executing functions will not work.
-```
+
+```javascript
 var regularFunction = function(HttpService, RouterService) {
 	// Without ES6 destructuring
 	var injected = $injector.inject(regularFunction);
@@ -89,7 +101,7 @@ var regularFunction = function(HttpService, RouterService) {
 
 Just call the function you configured. Consider the following:
 
-```
+```javascript
 class InjectMe {
 	constructor(HttpService, RouterService){
 		// Using ES6 deconstruction...
@@ -104,14 +116,12 @@ var myInstance = new InjectMe(); // myInstance.http is the injected object that 
 
 ### To Dos / Enhancements
 
-(a) Create "call" method that will accept a function and perform the injection for you, without needing to "initialize" the DI.
+(a) Create extendable class that provdides DI for all child classes?
 
-(b) Create extendable class that provdides DI for all child classes?
-
-(c) Explore advanced "tricks" like creating dummy functions that can be re-used to define a group of dependencies to inject.
+(b) Explore advanced "tricks" like creating dummy functions that can be re-used to define a group of dependencies to inject.
 
 *Would this work?*
-```
+```javascript
 // Represents a generic "Http" dependency group.
 var httpDependencies = function(HttpService, RouterService){};
 
@@ -125,7 +135,7 @@ var someHttpRelatedFunction = function() {
 
 *And this? Dynamic injection?*
 
-```
+```javascript
 class InjectMe {
 	constructor(someCondition){
 		// Using ES6 destructuring...
@@ -142,7 +152,7 @@ class InjectMe {
 ```
 
 *Or this?*
-```
+```javascript
 var someFunction = function(HttpService) { /* do stuff */ };
 
 // Later on...

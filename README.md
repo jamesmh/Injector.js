@@ -4,7 +4,14 @@ I've looked around for a simple library that provides dependency injection for v
 
 I'm using ES6 modules, webpack to compile and jest for testing.
 
-## Installation
+## Dev Installation
+
+Clone or download zip. If you want to compile then run "npm install" to install node dependencies. Then run "gulp".
+
+To run the jest unit tests run "npm test"
+
+
+## Usage Installation
 
 Include "/dist/injector.js" if you just want the compiled version.
 
@@ -18,26 +25,26 @@ window["$injector"] = new Injector();
 
 ### Step 1: Register Dependencies
 
-You need to provide "$injector" with all the dependencies you will need. Provide to the .register() method an object with (a) keys that correspond to the argument names that they will be injected into and (b) the actual object to be the dependency.
+You need to provide "$injector" with all the dependencies you will need. Provide to the .register() or .registerSingleton() method an object with (a) keys that correspond to the argument names that they will be injected into and (b) the actual object to be the dependency.
 
 ```javascript
 var http  = { get: "I'm a http service." };
 var router = { routes: "I'm a router."};
 
-$injector.register({
+$injector.registerSingleton({
 	HttpService: http,
 	RouterService: router
 });
 ```
 
-The .register() method will also accept a dependency registration in the following format:
+The .register() and .registerSingleton() methods will also accept a dependency registration in the following format:
 
 ```javascript
 var http  = { get: "I'm a http service." };
 var router = { routes: "I'm a router."};
 
-$injector.register("HttpService", http)
-	.register("RouterService", router);
+$injector.registerSingleton("HttpService", http)
+	.registerSingleton("RouterService", router);
 ```
 
 In both examples, any functions that are enabled for injection will have arguments "HttpService" and "RouterService" injected. Ex:
@@ -46,7 +53,24 @@ In both examples, any functions that are enabled for injection will have argumen
 function(HttpService, RouterService) { /* code here... */ };
 ```
 
-*Right now, the object you inject is used statically (will be addings instance option in future...).*
+To register dependencies that will be new instantiations everytime they are injected, use .register(). You need to provide an object that has a constructor so the injector is able to instantiate a new one.
+
+```javascript
+// Prototype....
+var http  = function() { this.get = "I'm a http service."; };
+
+// ES6 class
+class router {
+	constructor(){
+	 	this.get = "I'm a router.";
+	};
+};
+
+$injector.register({
+    HttpService: http, 
+    RouterService: router
+  });
+```
 
 
 ### Step 2: Enable Function For Injection

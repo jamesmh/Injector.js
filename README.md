@@ -8,7 +8,7 @@ I'm using ES6 modules, webpack to compile and jest for testing.
 
 Clone or download zip. If you want to compile then run "npm install" to install node dependencies. Then run "gulp".
 
-To run the jest unit tests run "npm test"
+To run the jest unit tests run "npm test".
 
 
 ## Usage Installation

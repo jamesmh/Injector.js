@@ -28,21 +28,32 @@ export class Injector {
 	 * @return {object}        The Injector instance.
 	 */
 	register(key, object){
+		return this._register(key, object, false);
+	};
+
+	registerSingleton(key, object){
+		return this._register(key, object, true);
+	};
+
+	_register(key, object, isSingleton = false){
 		var key = arguments[0],
 			object = arguments[1],
-			configObj = arguments[0];
+			configObj = arguments[0],
+			injector = this;
 
+		// Called as one registration with key and object.
 		if(typeof(key) === "string"){
-			this._dependencies[key] = object;
+			injector._dependencies[key] = { dependency: object, singleton: isSingleton };
 		}
-		else{
+		// Called with multiple objects to register.
+		else {
 			forEachProperty(configObj, (key, property) => {
-				this._dependencies[key] = property;
+				injector._dependencies[key] = { dependency: property, singleton: isSingleton };
 			});
 		}
 
-		return this;
-	};
+		return injector;
+	}
 
 	/**
 	 * Returns the dependencies for the supplied function.
@@ -53,10 +64,14 @@ export class Injector {
 	 * @return {object}       Object holding the dependencies.
 	 */
 	inject(funct) {
-		var dependenciesToInject = {};
-		_getArgumentNames(funct.toString()).forEach((argumentName) => {
-			dependenciesToInject[argumentName] = this._dependencies[argumentName]
+		var dependenciesToInject = {},
+			injector = this;
+
+		_getArgumentNames(funct.toString()).forEach(functArgName => {
+			var registered = this._dependencies[functArgName];		
+			dependenciesToInject[functArgName] = registered.singleton ? registered.dependency : new registered.dependency();
 		});
+
 		return dependenciesToInject;
 	};
 }

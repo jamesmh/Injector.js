@@ -4,7 +4,7 @@ var mockService =  { get: "I'm a mock. " };
 var debugService = { get: "I'm a debug service... " };
 var serverService = { get: "I'm a server service. "};
 
-$injector.register({
+$injector.registerSingleton({
 	MockService: mockService,
 	DebugService: debugService,
 	ServerService: serverService

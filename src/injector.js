@@ -46,13 +46,13 @@ export class Injector {
 	 * @return {object}       Object holding the dependencies.
 	 */
 	inject(funct) {
-		var dependenciesToInject = {},
-			injector = this;
-
-		_getArgumentNames(funct.toString()).forEach(functArgName => {
-			var registered = this._dependencies[functArgName];		
-			dependenciesToInject[functArgName] = registered.singleton ? registered.dependency : new registered.dependency();
-		});
+		const dependenciesToInject = {};
+		_getArgumentNames(funct.toString())
+			.map(argName => {
+				const registered = this._dependencies[argName];	
+				const dependencyIsSingleton = registered.singleton;
+				dependenciesToInject[argName] = registered.singleton ? registered.dependency : new registered.dependency();
+			});
 
 		return dependenciesToInject;
 	};

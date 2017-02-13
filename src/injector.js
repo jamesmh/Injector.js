@@ -1,11 +1,4 @@
-import { forEachProperty } from './utils';
-
-const  _regExInsideParentheses = /[(][^)]*[)]/;
-const _regExParenthesesAndSpaces = /[()\s]/g;
-
-var _getArgumentNames = function(functionString){
-	return _regExInsideParentheses.exec(functionString)[0].replace(_regExParenthesesAndSpaces, "").split(',');
-};
+import { forEachPropertyDoAction } from './utils';
 
 /**
  * Class that provides dependency injection for vanilla js.
@@ -23,37 +16,26 @@ export class Injector {
 
 	/**
 	 * Register a new dependency for injection.
-	 * @param  {string} key    Key of the dependency.
-	 * @param  {object} object The dependency object.
-	 * @return {object}        The Injector instance.
+	 * @param  {string} keyOrPOJO   Key of the dependency, javascript object with multiple dependencies defined.
+	 * @param  {object} object 		The dependency object.
+	 * @return {object}        		The Injector instance.
 	 */
-	register(key, object){
-		return this._register(key, object, false);
+	register(keyOrPOJO, object){
+		return _register(this, keyOrPOJO, object, false);
 	};
 
-	registerSingleton(key, object){
-		return this._register(key, object, true);
+	/**
+	 * Register a new singleton dependency.
+	 * 
+	 * @param {any} keyOrPOJO	Key of the dependency, javascript object with multiple dependencies defined.
+	 * @param {any} object		The dependency object.
+	 * @returns {object}		The Injector instance.
+	 * 
+	 * @memberOf Injector
+	 */
+	registerSingleton(keyOrPOJO, object){
+		return _register(this, keyOrPOJO, object, true);
 	};
-
-	_register(key, object, isSingleton = false){
-		var key = arguments[0],
-			object = arguments[1],
-			configObj = arguments[0],
-			injector = this;
-
-		// Called as one registration with key and object.
-		if(typeof(key) === "string"){
-			injector._dependencies[key] = { dependency: object, singleton: isSingleton };
-		}
-		// Called with multiple objects to register.
-		else {
-			forEachProperty(configObj, (key, property) => {
-				injector._dependencies[key] = { dependency: property, singleton: isSingleton };
-			});
-		}
-
-		return injector;
-	}
 
 	/**
 	 * Returns the dependencies for the supplied function.
@@ -75,3 +57,24 @@ export class Injector {
 		return dependenciesToInject;
 	};
 }
+
+const  _regExInsideParentheses = /[(][^)]*[)]/;
+const _regExParenthesesAndSpaces = /[()\s]/g;
+const _getArgumentNames = functionString => _regExInsideParentheses.exec(functionString)[0].replace(_regExParenthesesAndSpaces, "").split(',');
+const 	_register = (injector, keyOrPOJO, object, isSingleton = false) =>{
+
+		// Called as one registration with key and object.
+		if(typeof(keyOrPOJO) === "string"){
+			const key = keyOrPOJO;
+			injector._dependencies[key] = { dependency: object, singleton: isSingleton };
+		}
+		// Called with multiple objects to register.
+		else {
+			const configObject = keyOrPOJO;
+			forEachPropertyDoAction(configObject, (key, property) => {
+				injector._dependencies[key] = { dependency: property, singleton: isSingleton };
+			});
+		}
+
+		return injector;
+	}

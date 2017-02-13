@@ -1,8 +1,8 @@
 {
-  "name": "Injector.js",
+  "name": "js.injector",
   "version": "1.0.0",
   "description": "Vanilla JS dependancy injection.",
-  "main": "index.js",
+  "main": "src/export.js",
   "scripts": {
     "test": "jest"
   },
@@ -21,6 +21,7 @@
     "babel-loader": "^6.2.8",
     "gulp": "^3.9.1",
     "gulp-util": "^3.0.7",
+    "typescript": "^2.1.6",
     "webpack": "^1.13.3"
   },
   "devDependencies": {
